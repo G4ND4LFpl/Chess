@@ -1,0 +1,1 @@
+Wersja tej aplikacji zawierająca pełne działające rozwiązanie Visual Studio (.sln) oraz program skompilowany.
