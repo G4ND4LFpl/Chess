@@ -7,4 +7,8 @@
     <ApplicationIcon>desctop_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lang_Compiler\Lang_Compiler.csproj" />
+  </ItemGroup>
+
 </Project>

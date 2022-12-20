@@ -12,6 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using MyClasses;
 using MyClasses.Figures;
+using MyClasses.Languages;
 
 namespace Chess
 {
@@ -30,15 +31,24 @@ namespace Chess
             button2.MouseDown += MoveWindowBegin;
             button2.MouseMove += MoveWindow;
             ComboBoxSet();
-            //Panel
+            // Panel
             PanelBuild();
 
-            //Zdjęcie w tle
+            // Zdjęcie w tle
             MenuBackground = new ImageFrame();
             MenuBackground.Location = new Point(0, 30);
             MenuBackground.Size = new Size(645, 645);
             MenuBackground.SetImage("BackMenu.png");
             Controls.Add(MenuBackground);
+            // 
+            comboBox2.Items.AddRange(new object[] {
+            "5 "+lang.minute,
+            "10 "+lang.minute,
+            "20 "+lang.minute,
+            "30 "+lang.minute,
+            "60 "+lang.minute,
+            "90 "+lang.minute,
+            "Brak limitu"});
 
             mainLabel.BackColor = Color.Transparent;
         }
@@ -509,7 +519,7 @@ namespace Chess
             string path = langlist.paths[comboBox1.SelectedIndex];
             lang = Language.Load(path);
             //Ustawianie języka
-            StartButton.Text = lang.start;
+            StartButton.Text = lang.play;
             LoadButton.Text = lang.load;
             Button3.Text = lang.options;
             ExitButton.Text = lang.exit;

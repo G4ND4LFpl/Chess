@@ -1,5 +1,5 @@
 ﻿using System;
-using MyClasses;
+using MyClasses.Languages;
 using System.IO;
 using System.Runtime.Serialization.Json;
 
@@ -25,11 +25,11 @@ namespace Lang_Compiler
         static void CreateList()
         {
             LangList list = new LangList();
-            list.SetNames(new object[] { "English", "Polski" });
-            list.SetPaths(new object[] { "langs\\Lang_en.json", "langs\\Lang_pl.json" });
+            list.SetNames(new object[] { "English", "Polski" , "Español" });
+            list.SetPaths(new object[] { "langs\\Lang_en.json", "langs\\Lang_pl.json", "langs\\Lang_es.json" });
             try
             {
-                FileStream stream = new FileStream("List_languages.json", FileMode.Create);
+                FileStream stream = new FileStream("langs\\List_languages.json", FileMode.Create);
                 DataContractJsonSerializer serializator = new DataContractJsonSerializer(typeof(LangList));
                 serializator.WriteObject(stream, list);
                 stream.Close();
@@ -47,11 +47,15 @@ namespace Lang_Compiler
 
             Language language1 = new Language();
             English(language1);
-            Serialize(language1, "Lang_en.json");
+            Serialize(language1, "langs\\Lang_en.json");
 
             Language language2 = new Language();
             Polish(language2);
-            Serialize(language2, "Lang_pl.json");
+            Serialize(language2, "langs\\Lang_pl.json");
+
+            Language language3 = new Language();
+            Spanish(language3);
+            Serialize(language3, "langs\\Lang_es.json");
         }
         static void Polish(Language lang)
         {
@@ -64,6 +68,7 @@ namespace Lang_Compiler
             lang.lang = "Język";
             lang.time = "Czas";
             lang.noTime = "Brak limitu";
+            lang.minute = "minut";
             lang.back = "Powrót";
 
             lang.version = "Wersja: ";
@@ -87,6 +92,7 @@ namespace Lang_Compiler
             lang.lang = "Language";
             lang.time = "Time";
             lang.noTime = "No time limit";
+            lang.minute = "minutes";
             lang.back = "Back";
 
             lang.version = "Version: ";
@@ -98,6 +104,30 @@ namespace Lang_Compiler
             lang.answers[0] = "Yes";
             lang.answers[1] = "No";
             lang.answers[2] = "Save and quit";
+        }
+        static void Spanish(Language lang)
+        {
+            lang.play = "Jugar";
+            lang.load = "Cargar";
+            lang.options = "Ajustes";
+            lang.exit = "Salir";
+            lang.save = "Guardar";
+
+            lang.lang = "Idioma";
+            lang.time = "Tiempo";
+            lang.noTime = "Sin límite";
+            lang.minute = "minutos";
+            lang.back = "Devolver";
+
+            lang.version = "Versión: ";
+            lang.author = "Author: ";
+            lang.turn[0] = "El turno de las blancas";
+            lang.turn[1] = "El turno de las negras";
+
+            lang.ask = "¿Estás seguro de que quieres detener este juego?";
+            lang.answers[0] = "Si";
+            lang.answers[1] = "No";
+            lang.answers[2] = "Guardar y salir";
         }
     }
 }
