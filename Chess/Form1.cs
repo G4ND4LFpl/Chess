@@ -30,9 +30,11 @@ namespace Chess
             InitializeComponent();
             button2.MouseDown += MoveWindowBegin;
             button2.MouseMove += MoveWindow;
-            ComboBoxSet();
             // Panel
             PanelBuild();
+            // Language
+            LangComboBoxSet();
+            TimeComboBoxSet();
 
             // Zdjęcie w tle
             MenuBackground = new ImageFrame();
@@ -40,15 +42,6 @@ namespace Chess
             MenuBackground.Size = new Size(645, 645);
             MenuBackground.SetImage("BackMenu.png");
             Controls.Add(MenuBackground);
-            // 
-            comboBox2.Items.AddRange(new object[] {
-            "5 "+lang.minute,
-            "10 "+lang.minute,
-            "20 "+lang.minute,
-            "30 "+lang.minute,
-            "60 "+lang.minute,
-            "90 "+lang.minute,
-            "Brak limitu"});
 
             mainLabel.BackColor = Color.Transparent;
         }
@@ -469,9 +462,10 @@ namespace Chess
         private void PanelBuild()
         {
             Label label = new Label();
+            label.Name = "PanelLabel";
             label.Location = new Point(20, 20);
             label.AutoSize = true;
-            label.Text = lang.ask;
+            //label.Text = lang.ask;
             label.Font = new Font("Segoe UI", 18, FontStyle.Regular, GraphicsUnit.Point);
             panel1.Controls.Add(label);
             //Tak
@@ -479,7 +473,7 @@ namespace Chess
             yesButton.Name = "PanelButton1";
             yesButton.Location = new Point(20, 70);
             yesButton.Size = new Size(130, 50);
-            yesButton.Text = lang.answers[0];
+            //yesButton.Text = lang.answers[0];
             yesButton.Font = new Font("Segoe UI", 18, FontStyle.Regular, GraphicsUnit.Point);
             yesButton.Click += new EventHandler(BackToMenu);
             panel1.Controls.Add(yesButton);
@@ -488,7 +482,7 @@ namespace Chess
             noButton.Name = "PanelButton2";
             noButton.Location = new Point(170, 70);
             noButton.Size = new Size(130, 50);
-            noButton.Text = lang.answers[1];
+            //noButton.Text = lang.answers[1];
             noButton.Font = new Font("Segoe UI", 18, FontStyle.Regular, GraphicsUnit.Point);
             noButton.Click += new EventHandler(PanelHide);
             panel1.Controls.Add(noButton);
@@ -497,20 +491,38 @@ namespace Chess
             saveButton.Name = "PanelButton3";
             saveButton.Location = new Point(320, 70);
             saveButton.Size = new Size(200, 50);
-            saveButton.Text = lang.answers[2];
+            //saveButton.Text = lang.answers[2];
             saveButton.Font = new Font("Segoe UI", 18, FontStyle.Regular, GraphicsUnit.Point);
             saveButton.Click += new EventHandler(Save);
             panel1.Controls.Add(saveButton);
         }
-        private void ComboBoxSet()
+        private void PanelUpdate()
         {
-            //combo box 1
+            panel1.Controls["PanelLabel"].Text = lang.ask;
+            panel1.Controls["PanelButton1"].Text = lang.answers[0];
+            panel1.Controls["PanelButton2"].Text = lang.answers[1];
+            panel1.Controls["PanelButton3"].Text = lang.answers[2];
+        }
+        private void LangComboBoxSet()
+        {
             LangList langlist = LangList.Load("langs\\List_languages.json");
             
             comboBox1.Items.AddRange(langlist.names);
             comboBox1.SelectedIndex = 1;
+        }
+        private void TimeComboBoxSet(int idx = 4)
+        {
+            comboBox2.Items.AddRange(new object[] {
+            "5 "+lang.minute,
+            "10 "+lang.minute,
+            "20 "+lang.minute,
+            "30 "+lang.minute,
+            "60 "+lang.minute,
+            "90 "+lang.minute,
+            "Brak limitu"});
+
             //combo box 2
-            comboBox2.SelectedIndex = 4;
+            comboBox2.SelectedIndex = idx;
         }
         private void SetLanguage(object sender, EventArgs e)
         {
@@ -531,15 +543,9 @@ namespace Chess
             label5.Text = lang.time;
             int index = comboBox2.SelectedIndex;
             comboBox2.Items.Clear();
-            comboBox2.Items.AddRange(new object[] {
-            "5 minut",
-            "10 minut",
-            "20 minut",
-            "30 minut",
-            "60 minut",
-            "90 minut",
-            lang.noTime});
-            comboBox2.SelectedIndex = index;
+            TimeComboBoxSet(index);
+
+            PanelUpdate();
 
             label1.Text = lang.author + "Piotr Majewski";
             label6.Text = lang.version + "0.4";

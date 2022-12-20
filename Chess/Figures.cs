@@ -1,4 +1,5 @@
 ﻿using System;
+using Chess;
 
 namespace MyClasses
 {
