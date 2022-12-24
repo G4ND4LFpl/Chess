@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="MainWindow" Height="450" Width="800"
+        SizeChanged="SizeAdjust">
+    <Grid x:Name="menuGrid">
+        <local:MenuButton x:Name="playButton" Content="Play Singleplayer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="560,25,0,0" Height="45" Width="200" Style="{StaticResource menuButton}" Click="PlayAction"/>
+        <local:MenuButton x:Name="onlineButton" Content="Play Online" HorizontalAlignment="Left" Margin="560,80,0,0" VerticalAlignment="Top" Height="45" Width="200" Style="{StaticResource menuButton}" Click="PlayOnlineAction"/>
+        <local:MenuButton x:Name="loadButton" Content="Load" HorizontalAlignment="Left" Margin="560,135,0,0" VerticalAlignment="Top" Height="45" Width="200" Style="{StaticResource menuButton}" Click="LoadAction"/>
+        <local:MenuButton x:Name="optionsButton" Content="Options" HorizontalAlignment="Left" Margin="560,190,0,0" VerticalAlignment="Top" Height="45" Width="200" Style="{StaticResource menuButton}" Click="OptionsOpen"/>
+        <local:MenuButton x:Name="exitButton" Content="Exit" HorizontalAlignment="Left" Margin="560,245,0,0" VerticalAlignment="Top" Height="45" Width="200" Style="{StaticResource menuButton}" Click="ExitAction"/>
     </Grid>
 </Window>

@@ -24,6 +24,7 @@ namespace Chess
         Clock clock1, clock2;
         Language lang;
         const string saveformat = "0.3";
+        
         //Konstruktor
         public Form1()
         {
@@ -175,6 +176,7 @@ namespace Chess
             }
             board = null;
         }
+        
         //Wyświetlanie Interfejsu
         private void MenuShow(bool visible, object sender)
         {
@@ -392,6 +394,7 @@ namespace Chess
                 else SwitchTimer(2);
             }
         }
+        
         //Ustawienia
         private void OptionIn(object sender, EventArgs e)
         {
@@ -417,6 +420,7 @@ namespace Chess
 
             MenuShow(true, sender);
         }
+        
         //Inne
         private void MouseIn(object sender, EventArgs e)
         {
@@ -550,6 +554,7 @@ namespace Chess
             label1.Text = lang.author + "Piotr Majewski";
             label6.Text = lang.version + "0.4";
         }
+        
         //Obudowa okienka
         private void Minimalize(object sender, EventArgs e)
         {
