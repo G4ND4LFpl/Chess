@@ -4,9 +4,9 @@ using System.Collections;
 //using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
-using General.Figures;
+using Core.Figures;
 
-namespace General
+namespace Core
 {
     public class Board : IEnumerable
     {
@@ -14,23 +14,23 @@ namespace General
 
         public Figure this[int x, int y]
         {
-            get 
+            get
             {
-                if(x > 7 || y > 7 || x < 0 || y < 0)
+                if (x > 7 || y > 7 || x < 0 || y < 0)
                     return null;
                 else return board[x, y];
             }
         }
         public Figure this[Position p]
         {
-            get 
+            get
             {
                 if (p.x > 7 || p.y > 7 || p.x < 0 || p.y < 0)
                     return null;
                 else return board[p.x, p.y];
             }
         }
-        
+
         // Metody
         public IEnumerator GetEnumerator()
         {

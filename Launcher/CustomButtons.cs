@@ -19,7 +19,7 @@ namespace Chess
         internal abstract void Hover(object sender, MouseEventArgs args);
         internal abstract void UnHover(object sender, MouseEventArgs args);
     }
-    
+
     // Klasa Menu Button
     class MenuButton : CustomButton
     {

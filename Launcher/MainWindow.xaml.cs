@@ -1,4 +1,4 @@
-﻿//using System;
+﻿using System;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -12,7 +12,7 @@ using System.Windows.Controls;
 //using System.Windows.Media.Imaging;
 //using System.Windows.Navigation;
 //using System.Windows.Shapes;
-using General;
+using Core;
 
 namespace Chess
 {
@@ -20,7 +20,7 @@ namespace Chess
     {
         App app;
         ContentControl menuControlls;
-        Board board;
+        //Board board;
 
         public MainWindow()
         {
@@ -77,10 +77,11 @@ namespace Chess
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    button = new AreaButton(i+j);
+                    button = new AreaButton(i + j);
                     button.Style = (Style)Resources["customButton"];
                     button.Click += BoardClick;
-                    button.SourceSet(board[i, j].GetPath());
+                    //button.SourceSet(board[i, j].GetPath());
+                    button.SourceSet("ErrorImage.png");
 
                     chessGrid.Children.Add(button);
                     Grid.SetColumn(button, i);
