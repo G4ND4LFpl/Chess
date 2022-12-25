@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess", "Chess\Chess.csproj", "{19A65C64-87F2-4439-B307-774CE4CE16EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board", "..\..\Chess v1.0\board\Board.csproj", "{2813606F-6EA6-405B-9D48-B36A983947C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board", "board\Board.csproj", "{2813606F-6EA6-405B-9D48-B36A983947C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

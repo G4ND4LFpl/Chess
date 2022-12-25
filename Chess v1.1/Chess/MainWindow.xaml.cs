@@ -20,6 +20,7 @@ namespace Chess
     {
         App app;
         ContentControl menuControlls;
+        Board board;
 
         public MainWindow()
         {
@@ -37,16 +38,16 @@ namespace Chess
                 Margin = new Thickness(20, 20, 20, 20)
             };
 
+            ColumnDefinition column0 = new ColumnDefinition
+            {
+                Width = new GridLength(100, GridUnitType.Star)
+            };
+            grid.ColumnDefinitions.Add(column0);
             ColumnDefinition column1 = new ColumnDefinition
             {
                 Width = new GridLength(100, GridUnitType.Star)
             };
             grid.ColumnDefinitions.Add(column1);
-            ColumnDefinition column2 = new ColumnDefinition
-            {
-                Width = new GridLength(100, GridUnitType.Star)
-            };
-            grid.ColumnDefinitions.Add(column2);
 
             // ustawianie siatki szachów
             Grid chessGrid = new Grid
@@ -67,19 +68,19 @@ namespace Chess
             for (int i = 0; i < 8; i++)
             {
                 rows[i] = new RowDefinition();
+                rows[i].Height = new GridLength(100, GridUnitType.Star);
                 chessGrid.RowDefinitions.Add(rows[i]);
             }
-
             // Dodawanie pól
             AreaButton button;
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    button = new AreaButton(ChessColor.White);
+                    button = new AreaButton(i+j);
                     button.Style = (Style)Resources["customButton"];
                     button.Click += BoardClick;
-                    button.SourceSet("ErrorImage.png");
+                    button.SourceSet(board[i, j].GetPath());
 
                     chessGrid.Children.Add(button);
                     Grid.SetColumn(button, i);

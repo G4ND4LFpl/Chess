@@ -10,10 +10,10 @@
     <!-- Style -->
     <Window.Resources>
         <!-- Styl dla przycisków -->
-        <Style TargetType="{x:Type Button}" x:Key="customButton">
+        <Style TargetType="{x:Type local:CustomButton}" x:Key="customButton">
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate TargetType="{x:Type local:CustomButton}">
                         <Border BorderThickness="1.5" BorderBrush="Black" Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
