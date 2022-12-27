@@ -11,37 +11,41 @@ namespace Core
             void Move(Action castling, Action toQueen);
         }
 
-        //Klasa abstrakcyjna
+        // Klasa abstrakcyjna
         [Serializable]
-        public abstract class Figure : ICloneable
+        abstract class Figure : ICloneable
         {
             // Pola
-            public ChessColor color;
+            internal Color color;
             protected int x, y;
-            List<Position> movable;
+            internal List<Position> movable;
+            internal static string emptyPath = "/img/Empty.png";
+
+            // Właściwości
+            internal List<Position> MoveTable
+            {
+                get { return movable; }
+            }
 
             // Metody publiczne
-            public Figure(ChessColor color)
+            public Figure(Color color, Position pos)
             {
                 this.color = color;
-            }
-            public void Set(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
+                x = pos.x;
+                y = pos.y;
             }
             public void Set(Position position)
             {
                 x = position.x;
                 y = position.y;
             }
-            public List<Position> CanMoveTable(Board board)
+            public List<Position> CreateMoveTable(Board board)
             {
                 //Jeśli tabela istnieje
                 if (this.movable != null) return this.movable;
 
                 //Tworzenie tabeli
-                List<Position> movable = new List<Position>();
+                movable = new List<Position>();
 
                 foreach (Figure f in board)
                 {
@@ -51,14 +55,12 @@ namespace Core
                         movable.Add(position);
                     }
                 }
-                this.movable = movable;
                 return movable;
             }
             public object Clone()
             {
                 return MemberwiseClone();
             }
-
 
             // Metody chronione
             protected bool Streight(Board board, Position pos)
@@ -71,7 +73,7 @@ namespace Core
                     {
                         for (int i = Math.Min(y, pos.y) + 1; i < Math.Max(y, pos.y); i++)
                         {
-                            if (board[x, i] != null) return false;
+                            if (board[new Position(x, i)] != null) return false;
                         }
                         return true;
                     }
@@ -79,7 +81,7 @@ namespace Core
                     {
                         for (int i = Math.Min(x, pos.x) + 1; i < Math.Max(x, pos.x); i++)
                         {
-                            if (board[i, x] != null) return false;
+                            if (board[new Position(i, x)] != null) return false;
                         }
                         return true;
                     }
@@ -98,7 +100,7 @@ namespace Core
                         int maxY = Math.Max(y, pos.y);
                         for (int i = 1; i < Math.Abs(pos.x - x); i++)
                         {
-                            if (board[minX + i, maxY - i] != null) return false;
+                            if (board[new Position(minX + i, maxY - i)] != null) return false;
                         }
                         return true;
                     }
@@ -108,7 +110,7 @@ namespace Core
                         int minY = Math.Min(y, pos.y);
                         for (int i = 1; i < Math.Abs(pos.x - x); i++)
                         {
-                            if (board[minX + i, minY + i] != null) return false;
+                            if (board[new Position(minX + i, minY + i)] != null) return false;
                         }
                         return true;
                     }
@@ -119,40 +121,41 @@ namespace Core
             // Metody wirtualne
             public abstract bool CanMove(Board board, Position pos);
             // position - pozycja do której figura chce się przesunąć
-            public abstract string GetPath(bool LightUp = false); //?
+            public abstract string GetPath();
         }
 
         //Klasy - Dzieci
         [Serializable]
         class Pawn : Figure, IMovable
         {
-            bool wasMoved = false;
-            public Pawn(ChessColor color) : base(color) { }
+            internal bool wasMoved = false;
+            public Pawn(Color color, Position pos) : base(color, pos) { }
             public void Move(Action cast, Action pawnAction)
             {
                 wasMoved = true;
                 if (y == 0 || y == 7)
                 {
-                    if (color == ChessColor.Black) pawnAction.Invoke(x);
+                    if (color == Color.Black) pawnAction.Invoke(x);
                     else pawnAction.Invoke(x + 10);
                 }
             }
             public override bool CanMove(Board board, Position pos)
             {
-                //Czy do przodu ? (sprawdzamy przypadek odwrotny)
-                if ((pos.y <= y && color == ChessColor.White) || (pos.y >= y && color == ChessColor.Black))
+                // Czy do przodu ? (sprawdzamy przypadek odwrotny)
+                if ((pos.y <= y && color == Color.Black) || (pos.y >= y && color == Color.White))
                 {
                     return false;
                 }
-                //Czy wolne ?
+                // Czy można na wolne ?
                 if (x == pos.x && board[pos] == null)
                 {
-                    if (Math.Abs(pos.y - y) == 1) //pojedyńczy ruch
+                    // pojedyńczy ruch
+                    if (Math.Abs(pos.y - y) == 1) 
                     {
                         return true;
                     }
-                    //podwójny ruch
-                    if (Math.Abs(pos.y - y) == 2 && !wasMoved && board[pos.x, (pos.y + y) / 2] == null)
+                    // podwójny ruch
+                    if (Math.Abs(pos.y - y) == 2 && !wasMoved && board[new Position(pos.x, (pos.y + y) / 2)] == null)
                     {
                         return true;
                     }
@@ -165,20 +168,19 @@ namespace Core
                 }
                 return false;
             }
-            public override string GetPath(bool LightUp = false)
+            public override string GetPath()
             {
                 string path;
-                if (color == ChessColor.White) path = "WhitePawn";
+                if (color == Color.White) path = "WhitePawn";
                 else path = "BlackPawn";
-                if (LightUp == true) path += "LU";
-                return path + ".png";
+                return "/img/" + path + ".png";
             }
         }
 
         [Serializable]
         class Bishop : Figure
         {
-            public Bishop(ChessColor color) : base(color) { }
+            public Bishop(Color color, Position pos) : base(color, pos) { }
             public override bool CanMove(Board board, Position pos)
             {
                 //Czy wolne lub wrogie?
@@ -188,13 +190,12 @@ namespace Core
                 }
                 return false;
             }
-            public override string GetPath(bool LightUp = false)
+            public override string GetPath()
             {
                 string path;
-                if (color == ChessColor.White) path = "WhiteBishop";
+                if (color == Color.White) path = "WhiteBishop";
                 else path = "BlackBishop";
-                if (LightUp == true) path += "LU";
-                return path + ".png";
+                return "/img/" + path + ".png";
             }
         }
 
@@ -202,7 +203,7 @@ namespace Core
         class Rook : Figure, IMovable
         {
             bool wasMoved = false;
-            public Rook(ChessColor color) : base(color) { }
+            public Rook(Color color, Position pos) : base(color, pos) { }
             public bool Moved
             {
                 get { return wasMoved; }
@@ -217,20 +218,19 @@ namespace Core
                 }
                 return false;
             }
-            public override string GetPath(bool LightUp = false)
+            public override string GetPath()
             {
                 string path;
-                if (color == ChessColor.White) path = "WhiteRook";
+                if (color == Color.White) path = "WhiteRook";
                 else path = "BlackRook";
-                if (LightUp == true) path += "LU";
-                return path + ".png";
+                return "/img/" + path + ".png";
             }
         }
 
         [Serializable]
         class Knight : Figure
         {
-            public Knight(ChessColor color) : base(color) { }
+            public Knight(Color color, Position pos) : base(color, pos) { }
             public override bool CanMove(Board board, Position pos)
             {
                 //Czy wolne lub wrogie ?
@@ -241,20 +241,19 @@ namespace Core
                 }
                 return false;
             }
-            public override string GetPath(bool LightUp = false)
+            public override string GetPath()
             {
                 string path;
-                if (color == ChessColor.White) path = "WhiteKnight";
+                if (color == Color.White) path = "WhiteKnight";
                 else path = "BlackKnight";
-                if (LightUp == true) path += "LU";
-                return path + ".png";
+                return "/img/" + path + ".png";
             }
         }
 
         [Serializable]
         class Queen : Figure
         {
-            public Queen(ChessColor color) : base(color) { }
+            public Queen(Color color, Position pos) : base(color, pos) { }
             public override bool CanMove(Board board, Position pos)
             {
                 //Czy wolne lub wrogie ?
@@ -265,13 +264,12 @@ namespace Core
                 }
                 return false;
             }
-            public override string GetPath(bool LightUp = false)
+            public override string GetPath()
             {
                 string path;
-                if (color == ChessColor.White) path = "WhiteQueen";
+                if (color == Color.White) path = "WhiteQueen";
                 else path = "BlackQueen";
-                if (LightUp == true) path += "LU";
-                return path + ".png";
+                return "/img/" + path + ".png";
             }
         }
 
@@ -279,7 +277,7 @@ namespace Core
         class King : Figure, IMovable
         {
             bool wasMoved = false, castling = false;
-            public King(ChessColor color) : base(color) { }
+            public King(Color color, Position pos) : base(color, pos) { }
             public void Move(Action cast, Action pawnAction)
             {
                 wasMoved = true;
@@ -325,13 +323,12 @@ namespace Core
                 } */
                 return false;
             }
-            public override string GetPath(bool LightUp = false)
+            public override string GetPath()
             {
                 string path;
-                if (color == ChessColor.White) path = "WhiteKing";
+                if (color == Color.White) path = "WhiteKing";
                 else path = "BlackKing";
-                if (LightUp == true) path += "LU";
-                return path + ".png";
+                return "/img/" + path + ".png";
             }
         }
     }

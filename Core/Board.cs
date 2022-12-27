@@ -11,17 +11,43 @@ namespace Core
     public class Board : IEnumerable
     {
         Figure[,] board;
+        Color playerTurn;
+        bool figureChoosenFlag;
+        Position from;
 
-        public Figure this[int x, int y]
+        // Konstruktor
+        public Board()
         {
-            get
+            board = new Figure[8, 8];
+
+            // figury
+            for(int i=0;i<8;i++)
             {
-                if (x > 7 || y > 7 || x < 0 || y < 0)
-                    return null;
-                else return board[x, y];
+                board[i, 0] = SetDefaultFigure(Color.Black, i, 0);
+                board[i, 1] = new Pawn(Color.Black, new Position(i, 1));
+                // pusta plansza
+                board[i, 6] = new Pawn(Color.White, new Position(i, 6));
+                board[i, 7] = SetDefaultFigure(Color.White, i, 7);
             }
+            
+            playerTurn = Color.White;
+            figureChoosenFlag = false;
+
+            // dev test
+            //board[0, 0] = new Pawn(Color.White, new Position(0, 0));
+            //board[7, 7] = new Pawn(Color.Black, new Position(7, 7));
         }
-        public Figure this[Position p]
+        private Figure SetDefaultFigure(Color c, int x, int y)
+        {
+            if (x == 0 || x == 7) return new Rook(c, new Position(x, y));
+            if (x == 1 || x == 6) return new Knight(c, new Position(x, y));
+            if (x == 2 || x == 5) return new Bishop(c, new Position(x, y));
+            if (x == 3) return new Queen(c, new Position(x, y));
+            if (x == 4) return new King(c, new Position(x, y));
+            else return null;
+        }
+
+        internal Figure this[Position p]
         {
             get
             {
@@ -29,12 +55,56 @@ namespace Core
                     return null;
                 else return board[p.x, p.y];
             }
+            set
+            {
+                if (p.x <= 7 || p.y <= 7 || p.x >= 0 || p.y >= 0)
+                    board[p.x, p.y] = value;
+            }
         }
 
-        // Metody
+        // Metody publiczne
+        public string GetFigureImgSource(int row, int column)
+        {
+            if (row > 7 || column > 7 || row < 0 || column < 0)
+                return null;
+            else if (board[row, column] != null) return board[row, column].GetPath(); 
+            else return Figure.emptyPath;
+        }
+        public void Click(Position position)
+        {
+            if (position.x > 7 || position.y > 7 || position.x < 0 || position.y < 0) return;
+
+            // Wybór figury
+            if (!figureChoosenFlag)
+            {
+                // Kliknięcie w figurę
+                if (this[position] != null && this[position].color == playerTurn)
+                {
+                    from = position;
+                    figureChoosenFlag = true;
+                }
+                return;
+            }
+
+            // Wykonywanie ruchu
+            if (this[from].CanMove(this, position))
+            {
+                // Ruch
+                this[position] = this[from];
+                this[position].Set(position);
+                this[from] = null;
+
+                if (playerTurn == Color.White) playerTurn = Color.Black;
+                else playerTurn = Color.White;
+            }
+
+            // Końcowe zmiany
+            figureChoosenFlag = false;
+        }
+
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();  
         }
     }
 }

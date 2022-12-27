@@ -7,7 +7,7 @@ namespace Core
     delegate void Action(int x);
 
     //Typy wartościowe
-    public enum ChessColor
+    internal enum Color
     {
         White, Black
     }
@@ -22,5 +22,28 @@ namespace Core
         }
         public int x;
         public int y;
+    }
+
+    class xx
+    {
+        public xx()
+        {
+            Dictionary<Position, Figures.Figure> dict = new Dictionary<Position, Figures.Figure>();
+
+            dict.Add(new Position(3, 4), new Figures.Knight(Color.White, new Position(3, 4)));
+            dict.Add(new Position(2, 4), new Figures.Pawn(Color.White, new Position(2, 4)));
+            dict.Add(new Position(3, 3), new Figures.Bishop(Color.Black, new Position(3, 3)));
+
+            Position old_pos = new Position(1, 5);
+            Position new_pos = new Position(1, 1);
+
+            dict.Add(old_pos, new Figures.Rook(Color.Black, old_pos));
+
+            if (!dict.ContainsKey(new_pos))
+            {
+                dict.Add(new_pos, dict[old_pos]);
+                dict.Remove(old_pos);
+            }
+        }
     }
 }

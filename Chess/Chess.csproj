@@ -7,8 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ErrorImage.png" />
-    <None Remove="MenuImage.png" />
+	  <None Remove="img/ErrorImage.png" />
+	  <None Remove="img/MenuImage.png" />
+	  <None Remove="img/Empty.png" />
+
+	  <None Remove="img/BlackBishop.png" />
+	  <None Remove="img/BlackKing.png" />
+	  <None Remove="img/BlackKnight.png" />
+	  <None Remove="img/BlackPawn.png" />
+	  <None Remove="img/BlackQueen.png" />
+	  <None Remove="img/BlackRook.png" />
+
+	  <None Remove="img/WhiteBishop.png" />
+	  <None Remove="img/WhiteKing.png" />
+	  <None Remove="img/WhiteKnight.png" />
+	  <None Remove="img/WhitePawn.png" />
+	  <None Remove="img/WhiteQueen.png" />
+	  <None Remove="img/WhiteRook.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,8 +31,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="ErrorImage.png" />
-    <Resource Include="MenuImage.png" />
+	  <Resource Include="img/ErrorImage.png" />
+	  <Resource Include="img/MenuImage.png" />
+	  <Resource Include="img/Empty.png" />
+
+	  <Resource Include="img/BlackBishop.png" />
+	  <Resource Include="img/BlackKing.png" />
+	  <Resource Include="img/BlackKnight.png" />
+	  <Resource Include="img/BlackPawn.png" />
+	  <Resource Include="img/BlackQueen.png" />
+	  <Resource Include="img/BlackRook.png" />
+
+	  <Resource Include="img/WhiteBishop.png" />
+	  <Resource Include="img/WhiteKing.png" />
+	  <Resource Include="img/WhiteKnight.png" />
+	  <Resource Include="img/WhitePawn.png" />
+	  <Resource Include="img/WhiteQueen.png" />
+	  <Resource Include="img/WhiteRook.png" />
   </ItemGroup>
 
 </Project>

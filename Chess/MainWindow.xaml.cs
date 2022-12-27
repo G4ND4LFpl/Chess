@@ -20,7 +20,8 @@ namespace Chess
     {
         App app;
         ContentControl menuControlls;
-        //Board board;
+        Grid chessGrid;
+        Board board;
 
         public MainWindow()
         {
@@ -28,9 +29,11 @@ namespace Chess
 
             app = App.Current as App;
         }
-
-        private void PlayAction(object sender, RoutedEventArgs e)
+        private void StartNewGame(object sender, RoutedEventArgs e)
         {
+            // Tworzenie planszy
+            board = new Board();
+
             // ustawianie głównej siatki
             Grid grid = new Grid()
             {
@@ -38,31 +41,22 @@ namespace Chess
                 Margin = new Thickness(20, 20, 20, 20)
             };
 
-            ColumnDefinition column0 = new ColumnDefinition
+            // kolumny duże
+            ColumnDefinition[] outColumns = new ColumnDefinition[8];
+            for (int i = 0; i < 2; i++)
             {
-                Width = new GridLength(100, GridUnitType.Star)
-            };
-            grid.ColumnDefinitions.Add(column0);
-            ColumnDefinition column1 = new ColumnDefinition
-            {
-                Width = new GridLength(100, GridUnitType.Star)
-            };
-            grid.ColumnDefinitions.Add(column1);
+                outColumns[i] = new ColumnDefinition();
+                outColumns[i].Width = new GridLength(100, GridUnitType.Star);
+                grid.ColumnDefinitions.Add(outColumns[i]);
+            }
 
             // ustawianie siatki szachów
-            Grid chessGrid = new Grid
+            chessGrid = new Grid
             {
                 ShowGridLines = false,
                 Margin = new Thickness(10, 10, 10, 10)
             };
-            // kolumny
-            ColumnDefinition[] columns = new ColumnDefinition[8];
-            for (int i = 0; i < 8; i++)
-            {
-                columns[i] = new ColumnDefinition();
-                columns[i].Width = new GridLength(100, GridUnitType.Star);
-                chessGrid.ColumnDefinitions.Add(columns[i]);
-            }
+
             // wiersze
             RowDefinition[] rows = new RowDefinition[8];
             for (int i = 0; i < 8; i++)
@@ -71,6 +65,15 @@ namespace Chess
                 rows[i].Height = new GridLength(100, GridUnitType.Star);
                 chessGrid.RowDefinitions.Add(rows[i]);
             }
+            // kolumny
+            ColumnDefinition[] columns = new ColumnDefinition[8];
+            for (int i = 0; i < 8; i++)
+            {
+                columns[i] = new ColumnDefinition();
+                columns[i].Width = new GridLength(100, GridUnitType.Star);
+                chessGrid.ColumnDefinitions.Add(columns[i]);
+            }
+
             // Dodawanie pól
             AreaButton button;
             for (int i = 0; i < 8; i++)
@@ -80,16 +83,17 @@ namespace Chess
                     button = new AreaButton(i + j);
                     button.Style = (Style)Resources["customButton"];
                     button.Click += BoardClick;
-                    //button.SourceSet(board[i, j].GetPath());
-                    button.SourceSet("ErrorImage.png");
+                    button.SourceSet(board.GetFigureImgSource(i, j));
 
                     chessGrid.Children.Add(button);
                     Grid.SetColumn(button, i);
                     Grid.SetRow(button, j);
                 }
             }
+
             grid.Children.Add(chessGrid);
             Grid.SetColumn(chessGrid, 0);
+            Grid.SetColumnSpan(chessGrid, 1);
 
             // Stack panel i content controlls - definicje
             StackPanel contentPanel = new StackPanel();
@@ -102,7 +106,16 @@ namespace Chess
         private void BoardClick(object sender, RoutedEventArgs e)
         {
             // brak 
-            MessageBox.Show("Ta funkcja nie zastała jeszcze zaimplementowana!", "Funkcja nie istnieje", MessageBoxButton.OK, MessageBoxImage.Information);
+            AreaButton sendButton = (AreaButton)sender;
+            board.Click(new Position(Grid.GetColumn(sendButton), Grid.GetRow(sendButton)));
+            UpdateBoard();
+        }
+        private void UpdateBoard()
+        {
+            foreach (AreaButton button in chessGrid.Children)
+            {
+                button.SourceSet(board.GetFigureImgSource(Grid.GetColumn(button), Grid.GetRow(button)));
+            }
         }
         private void PlayOnlineAction(object sender, RoutedEventArgs e)
         {
