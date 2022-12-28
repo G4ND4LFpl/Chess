@@ -63,16 +63,22 @@ namespace Core
         }
 
         // Metody publiczne
-        public string GetFigureImgSource(int row, int column)
+        public string GetFigureImgSource(int x, int y)
         {
-            if (row > 7 || column > 7 || row < 0 || column < 0)
+            if (x > 7 || y > 7 || x < 0 || y < 0)
                 return null;
-            else if (board[row, column] != null) return board[row, column].GetPath(); 
+            else if (board[x, y] != null) return board[x, y].GetPath(); 
             else return Figure.emptyPath;
         }
-        public void Click(Position position)
+        public bool IsChoosen(int x, int y)
         {
-            if (position.x > 7 || position.y > 7 || position.x < 0 || position.y < 0) return;
+            if (figureChoosenFlag && from == new Position(x, y)) return true;
+            else return false;
+        }
+        public void Click(int x, int y)
+        {
+            if (x > 7 || y > 7 || x < 0 || y < 0) return;
+            Position position = new Position(x, y);
 
             // Wybór figury
             if (!figureChoosenFlag)

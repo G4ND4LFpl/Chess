@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -22,6 +23,11 @@ namespace Chess
         ContentControl menuControlls;
         Grid chessGrid;
         Board board;
+
+        // dev
+        Label timeL;
+        long sum, peek = 0;
+        long count = 0;
 
         public MainWindow()
         {
@@ -95,6 +101,12 @@ namespace Chess
             Grid.SetColumn(chessGrid, 0);
             Grid.SetColumnSpan(chessGrid, 1);
 
+            // dev
+            timeL = new Label();
+            timeL.Content = "Czas";
+            grid.Children.Add(timeL);
+            Grid.SetColumn(timeL, 1);
+
             // Stack panel i content controlls - definicje
             StackPanel contentPanel = new StackPanel();
             contentPanel.Children.Add(grid);
@@ -107,7 +119,20 @@ namespace Chess
         {
             // brak 
             AreaButton sendButton = (AreaButton)sender;
-            board.Click(new Position(Grid.GetColumn(sendButton), Grid.GetRow(sendButton)));
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            board.Click(Grid.GetColumn(sendButton), Grid.GetRow(sendButton));
+            watch.Stop();
+            sum += watch.ElapsedTicks;
+            peek = Math.Max(peek, watch.ElapsedTicks);
+            count++;
+            timeL.Content = "Czas ruchu: " + watch.ElapsedTicks.ToString() + "\nŚredni czas: "+(sum/count).ToString() + "\nMax: " + peek;
+
+            /*
+             * Średni czas ~ 400
+             * Max czas - 5200
+            */
             UpdateBoard();
         }
         private void UpdateBoard()
@@ -115,6 +140,8 @@ namespace Chess
             foreach (AreaButton button in chessGrid.Children)
             {
                 button.SourceSet(board.GetFigureImgSource(Grid.GetColumn(button), Grid.GetRow(button)));
+                if (board.IsChoosen(Grid.GetColumn(button), Grid.GetRow(button))) button.LockBorderOn = true;
+                else button.LockBorderOn = false;
             }
         }
         private void PlayOnlineAction(object sender, RoutedEventArgs e)

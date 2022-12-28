@@ -20,6 +20,15 @@ namespace Core
             this.x = x;
             this.y = y;
         }
+        public static bool operator == (Position a, Position b)
+        {
+            if (a.x == b.x && a.y == b.y) return true;
+            else return false;
+        }
+        public static bool operator != (Position a, Position b)
+        {
+            return !(a == b);
+        }
         public int x;
         public int y;
     }
