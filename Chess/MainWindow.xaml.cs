@@ -130,8 +130,13 @@ namespace Chess
             timeL.Content = "Czas ruchu: " + watch.ElapsedTicks.ToString() + "\nŚredni czas: "+(sum/count).ToString() + "\nMax: " + peek;
 
             /*
+             * TABLICA [x, y]
              * Średni czas ~ 400
-             * Max czas - 5200
+             * Max czas - 5 200
+             * 
+             * SŁOWNIK
+             * Średni czas ~ 450
+             * Max czas - 14 150
             */
             UpdateBoard();
         }

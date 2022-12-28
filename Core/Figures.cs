@@ -39,7 +39,7 @@ namespace Core
                 x = position.x;
                 y = position.y;
             }
-            public List<Position> CreateMoveTable(Board board)
+            /*public List<Position> CreateMoveTable(Dictionary<Position, Figure> board)
             {
                 //Jeśli tabela istnieje
                 if (this.movable != null) return this.movable;
@@ -56,14 +56,14 @@ namespace Core
                     }
                 }
                 return movable;
-            }
+            }*/
             public object Clone()
             {
                 return MemberwiseClone();
             }
 
             // Metody chronione
-            protected bool Streight(Board board, Position pos)
+            protected bool Streight(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy w linii prostej?
                 if (pos.x == x || pos.y == y)
@@ -73,7 +73,7 @@ namespace Core
                     {
                         for (int i = Math.Min(y, pos.y) + 1; i < Math.Max(y, pos.y); i++)
                         {
-                            if (board[new Position(x, i)] != null) return false;
+                            if (board.ContainsKey(new Position(x, i))) return false;
                         }
                         return true;
                     }
@@ -81,14 +81,14 @@ namespace Core
                     {
                         for (int i = Math.Min(x, pos.x) + 1; i < Math.Max(x, pos.x); i++)
                         {
-                            if (board[new Position(i, x)] != null) return false;
+                            if (board.ContainsKey(new Position(i, x))) return false;
                         }
                         return true;
                     }
                 }
                 return false;
             }
-            protected bool Cross(Board board, Position pos)
+            protected bool Cross(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy po krosie?
                 if (Math.Abs(pos.x - x) == Math.Abs(pos.y - y))
@@ -100,7 +100,7 @@ namespace Core
                         int maxY = Math.Max(y, pos.y);
                         for (int i = 1; i < Math.Abs(pos.x - x); i++)
                         {
-                            if (board[new Position(minX + i, maxY - i)] != null) return false;
+                            if (board.ContainsKey(new Position(minX + i, maxY - i))) return false;
                         }
                         return true;
                     }
@@ -110,7 +110,7 @@ namespace Core
                         int minY = Math.Min(y, pos.y);
                         for (int i = 1; i < Math.Abs(pos.x - x); i++)
                         {
-                            if (board[new Position(minX + i, minY + i)] != null) return false;
+                            if (board.ContainsKey(new Position(minX + i, minY + i))) return false;
                         }
                         return true;
                     }
@@ -119,7 +119,7 @@ namespace Core
             }
 
             // Metody wirtualne
-            public abstract bool CanMove(Board board, Position pos);
+            public abstract bool CanMove(Dictionary<Position, Figure> board, Position pos);
             // position - pozycja do której figura chce się przesunąć
             public abstract string GetPath();
         }
@@ -139,7 +139,7 @@ namespace Core
                     else pawnAction.Invoke(x + 10);
                 }
             }
-            public override bool CanMove(Board board, Position pos)
+            public override bool CanMove(Dictionary<Position, Figure> board, Position pos)
             {
                 // Czy do przodu ? (sprawdzamy przypadek odwrotny)
                 if ((pos.y <= y && color == Color.Black) || (pos.y >= y && color == Color.White))
@@ -147,7 +147,7 @@ namespace Core
                     return false;
                 }
                 // Czy można na wolne ?
-                if (x == pos.x && board[pos] == null)
+                if (x == pos.x && !board.ContainsKey(pos))
                 {
                     // pojedyńczy ruch
                     if (Math.Abs(pos.y - y) == 1) 
@@ -155,7 +155,7 @@ namespace Core
                         return true;
                     }
                     // podwójny ruch
-                    if (Math.Abs(pos.y - y) == 2 && !wasMoved && board[new Position(pos.x, (pos.y + y) / 2)] == null)
+                    if (Math.Abs(pos.y - y) == 2 && !wasMoved && !board.ContainsKey(new Position(pos.x, (pos.y + y) / 2)))
                     {
                         return true;
                     }
@@ -163,7 +163,7 @@ namespace Core
                 //Czy bicie ?
                 if (Math.Abs(pos.y - y) == 1 && Math.Abs(pos.x - x) == 1)
                 {
-                    if (board[pos] != null && board[pos].color != color)
+                    if (board.ContainsKey(pos) && board[pos].color != color)
                         return true;
                 }
                 return false;
@@ -181,10 +181,10 @@ namespace Core
         class Bishop : Figure
         {
             public Bishop(Color color, Position pos) : base(color, pos) { }
-            public override bool CanMove(Board board, Position pos)
+            public override bool CanMove(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy wolne lub wrogie?
-                if (board[pos] == null || board[pos].color != color)
+                if (!board.ContainsKey(pos) || board[pos].color != color)
                 {
                     return Cross(board, pos);
                 }
@@ -209,10 +209,10 @@ namespace Core
                 get { return wasMoved; }
             }
             public void Move(Action cast, Action pawnAction) { wasMoved = true; }
-            public override bool CanMove(Board board, Position pos)
+            public override bool CanMove(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy wolne lub wrogie ?
-                if (board[pos] == null || board[pos].color != color)
+                if (!board.ContainsKey(pos) || board[pos].color != color)
                 {
                     return Streight(board, pos);
                 }
@@ -231,10 +231,10 @@ namespace Core
         class Knight : Figure
         {
             public Knight(Color color, Position pos) : base(color, pos) { }
-            public override bool CanMove(Board board, Position pos)
+            public override bool CanMove(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy wolne lub wrogie ?
-                if (board[pos] == null || board[pos].color != color)
+                if (!board.ContainsKey(pos) || board[pos].color != color)
                 {
                     int z = (int)(Math.Pow(x - pos.x, 2) + Math.Pow(y - pos.y, 2));
                     if (z == 5) return true;
@@ -254,10 +254,10 @@ namespace Core
         class Queen : Figure
         {
             public Queen(Color color, Position pos) : base(color, pos) { }
-            public override bool CanMove(Board board, Position pos)
+            public override bool CanMove(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy wolne lub wrogie ?
-                if (board[pos] == null || board[pos].color != color)
+                if (!board.ContainsKey(pos) || board[pos].color != color)
                 {
                     if (Streight(board, pos) || Cross(board, pos))
                         return true;
@@ -291,10 +291,10 @@ namespace Core
                     else throw new Exception("Błędna lokalizacja");
                 }
             }
-            public override bool CanMove(Board board, Position pos)
+            public override bool CanMove(Dictionary<Position, Figure> board, Position pos)
             {
                 //Czy wolne lub wrogie ?
-                if (board[pos] == null || board[pos].color != color)
+                if (!board.ContainsKey(pos) || board[pos].color != color)
                 {
                     int z = (int)(Math.Pow(x - pos.x, 2) + Math.Pow(y - pos.y, 2));
                     if (z <= 2) return true;

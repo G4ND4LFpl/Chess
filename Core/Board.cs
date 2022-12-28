@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-//using System.Collections.Generic;
+using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
@@ -10,32 +10,30 @@ namespace Core
 {
     public class Board : IEnumerable
     {
-        Figure[,] board;
+        Dictionary<Position, Figure> board;
         Color playerTurn;
         bool figureChoosenFlag;
-        Position from;
+        Position from, whiteKing, blackKing;
 
         // Konstruktor
         public Board()
         {
-            board = new Figure[8, 8];
+            board = new Dictionary<Position, Figure>();
 
             // figury
             for(int i=0;i<8;i++)
             {
-                board[i, 0] = SetDefaultFigure(Color.Black, i, 0);
-                board[i, 1] = new Pawn(Color.Black, new Position(i, 1));
+                board.Add(new Position(i, 0), SetDefaultFigure(Color.Black, i, 0));
+                board.Add(new Position(i, 1), new Pawn(Color.Black, new Position(i, 1)));
                 // pusta plansza
-                board[i, 6] = new Pawn(Color.White, new Position(i, 6));
-                board[i, 7] = SetDefaultFigure(Color.White, i, 7);
+                board.Add(new Position(i, 6), new Pawn(Color.White, new Position(i, 6)));
+                board.Add(new Position(i, 7), SetDefaultFigure(Color.White, i, 7));
             }
             
             playerTurn = Color.White;
             figureChoosenFlag = false;
-
-            // dev test
-            //board[0, 0] = new Pawn(Color.White, new Position(0, 0));
-            //board[7, 7] = new Pawn(Color.Black, new Position(7, 7));
+            blackKing = new Position(4, 0);
+            whiteKing = new Position(4, 7);
         }
         private Figure SetDefaultFigure(Color c, int x, int y)
         {
@@ -47,18 +45,17 @@ namespace Core
             else return null;
         }
 
-        internal Figure this[Position p]
+        private Figure this[Position p]
         {
             get
             {
-                if (p.x > 7 || p.y > 7 || p.x < 0 || p.y < 0)
-                    return null;
-                else return board[p.x, p.y];
+                if (board.ContainsKey(p)) return board[p];
+                else return null;
             }
             set
             {
                 if (p.x <= 7 || p.y <= 7 || p.x >= 0 || p.y >= 0)
-                    board[p.x, p.y] = value;
+                    board.Add(p, value);
             }
         }
 
@@ -67,7 +64,7 @@ namespace Core
         {
             if (x > 7 || y > 7 || x < 0 || y < 0)
                 return null;
-            else if (board[x, y] != null) return board[x, y].GetPath(); 
+            else if (board.ContainsKey(new Position(x, y))) return board[new Position(x, y)].GetPath(); 
             else return Figure.emptyPath;
         }
         public bool IsChoosen(int x, int y)
@@ -84,7 +81,7 @@ namespace Core
             if (!figureChoosenFlag)
             {
                 // Kliknięcie w figurę
-                if (this[position] != null && this[position].color == playerTurn)
+                if (board.ContainsKey(position) && board[position].color == playerTurn)
                 {
                     from = position;
                     figureChoosenFlag = true;
@@ -93,18 +90,22 @@ namespace Core
             }
 
             // Wykonywanie ruchu
-            if (this[from].CanMove(this, position))
+            if (board[from].CanMove(board, position))
             {
                 // Ruch
-                this[position] = this[from];
-                this[position].Set(position);
-                this[from] = null;
+                board[position] = board[from];
+                board[position].Set(position);
+                board.Remove(from);
 
+                // Czy gracz odsłania swojego króla
+                // Czy król jest atakowany
+
+                // Koniec tury
                 if (playerTurn == Color.White) playerTurn = Color.Black;
                 else playerTurn = Color.White;
             }
 
-            // Końcowe zmiany
+            // Po kliknięciu
             figureChoosenFlag = false;
         }
 
